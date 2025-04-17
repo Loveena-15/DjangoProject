@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'images/Screenshot 2025-02-14 221343.png' %}" />
+    <title>QALA~Signup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background: url("{% static 'images/pic.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            display: flex;
+            width: 800px;
+            height: 500px;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .flip-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            background: transparent;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+        }
+
+        .card-side.back {
+            transform: rotateY(180deg);
+        }
+
+        h1 {
+            color: black;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 12px 40px;
+            border: 2px solid black;
+            border-radius: 10px;
+            font-size: 16px;
+            background: transparent;
+            color: black;
+        }
+
+        .input-container .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: black;
+        }
+
+        .input-container .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .switch-link {
+            margin-top: 20px;
+            text-align: center;
+            color: black;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="flip-container">
+            <div class="card" id="card">
+                <!-- Sign Up Form -->
+                <div class="card-side front">
+                    <h1>Sign Up</h1>
+                    <!-- Form Submission -->
+                    <form action="{% url 'signup' %}" method="POST">
+                        {% csrf_token %}
+                        <!-- Display messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <!-- Name Input -->
+                        <div class="input-container">
+                            <i class="fas fa-user icon"></i>
+                            <input type="text" name="name" placeholder="Enter Your Name" required />
+                        </div>
+                        
+                        <!-- Email Input -->
+                        <div class="input-container">
+                            <i class="fas fa-envelope icon"></i>
+                            <input type="email" name="email" placeholder="Enter Email" required />
+                        </div>
+                        
+                        <!-- Password Input -->
+                        <div class="input-container">
+                            <input type="password" name="password" placeholder="Create Password" required id="password"/>
+                            <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit">Sign Up</button>
+                    </form>
+
+                    <span class="switch-link" onclick="flipCard()">Already have an account? Sign In</span>
+                </div>
+
+                <!-- Sign In Form -->
+                <div class="card-side back">
+                    <h1>Sign In</h1>
+                    <form action="{% url 'login' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="input-container">
+                            <i class="fas fa-envelope icon"></i>
+                            <input type="email" name="email" placeholder="Enter Email" required />
+                        </div>
+                        <div class="input-container">
+                            <input type="password" name="password" placeholder="Enter Password" required id="login-password"/>
+                            <i class="fas fa-eye toggle-password" onclick="toggleLoginPassword()"></i>
+                        </div>
+                        <button type="submit">Sign In</button>
+                    </form>
+                    <span class="switch-link" onclick="flipCard()">Don't have an account? Sign Up</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle password visibility (Sign Up)
+        function togglePassword() {
+            var password = document.getElementById('password');
+            var toggleIcon = document.querySelector('.front .toggle-password');
+            if (password.type === "password") {
+                password.type = "text";
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                password.type = "password";
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Function to toggle password visibility (Sign In)
+        function toggleLoginPassword() {
+            var password = document.getElementById('login-password');
+            var toggleIcon = document.querySelector('.back .toggle-password');
+            if (password.type === "password") {
+                password.type = "text";
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                password.type = "password";
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Function to flip the card between sign up and sign in forms
+        function flipCard() {
+            document.getElementById('card').classList.toggle('is-flipped');
+        }
+    </script>
+</body>
+</html>

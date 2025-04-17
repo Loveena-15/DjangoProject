@@ -1,0 +1,620 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Qala Art Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --accent-color: #444444;
+            --light-color: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-medium: #cccccc;
+            --gray-dark: #666666;
+            --text-color: #333333;
+            --text-light: #666666;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 4rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            margin-top: var(--spacing-md);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        p {
+            margin-bottom: var(--spacing-sm);
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-sm);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            padding: var(--spacing-sm) 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: var(--spacing-md);
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gray-medium);
+        }
+        
+        .hero {
+            height: 50vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "images/hero-bg.jpg" %}') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .section-title h2 {
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+        }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .mission-card, .vision-card, .values-card {
+            padding: var(--spacing-md);
+            border-radius: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            border: 1px solid var(--gray-medium);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .mission-card:hover, .vision-card:hover, .values-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mission-card h3, .vision-card h3 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .mission-card h3::after, .vision-card h3::after, .values-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+        
+        .values-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .values-list li {
+            margin-bottom: var(--spacing-sm);
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .values-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 0;
+        }
+        
+        .values-list strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .team-container {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .team-member {
+            background-color: white;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--gray-medium);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-img {
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .member-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+    
+        }
+        
+        .team-member:hover .member-img img {
+            transform: scale(1.05);
+        }
+        
+        .member-info {
+            padding: var(--spacing-md);
+        }
+        
+        .member-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .member-title {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+        
+        .collaborative-spirit {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-lg) 0;
+            text-align: center;
+        }
+        
+        .collaborative-spirit h2 {
+            color: white;
+        }
+        
+        .collaborative-spirit h2::after {
+            background-color: white;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .collaborative-spirit p {
+            max-width: 800px;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .call-to-action {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 0;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .call-to-action:hover {
+            background-color: var(--gray-medium);
+            transform: scale(1.05);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: #999;
+            padding: var(--spacing-md) 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--gray-medium);
+        }
+        
+        .copyright {
+            margin-top: var(--spacing-sm);
+            font-size: 0.9rem;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .gray-bg {
+            background-color: var(--gray-light);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary-color);
+                flex-direction: column;
+                align-items: center;
+                padding: var(--spacing-sm) 0;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                z-index: 99;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+            }
+            
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-members {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="{% url 'home' %}" class="logo">Qala</a>
+                <button class="mobile-menu-btn">☰</button>
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="{% url 'signup' %}">Sign-In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>About Qala</h1>
+        <p>Where Technology Meets Art</p>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <p>Qala is more than just an art gallery—it's a digital canvas where innovation meets creativity. Founded by a team of passionate art enthusiasts with diverse technical backgrounds, we're on a mission to transform how people experience and interact with art in the digital age.</p>
+            
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3>Our Mission</h3>
+                    <p>To bridge the gap between traditional art appreciation and modern technology, creating an accessible platform where artists can showcase their work and art lovers can discover new perspectives from anywhere in the world.</p>
+                </div>
+                
+                <div class="vision-card">
+                    <h3>Our Vision</h3>
+                    <p>We envision a world where art transcends physical boundaries and becomes an integral part of everyone's digital experience. Qala aims to be the premier destination for those seeking to explore, appreciate, and collect art in an immersive online environment.</p>
+                </div>
+                
+                <div class="values-card">
+                    <h3>Our Values</h3>
+                    <ul class="values-list">
+                        <li><strong>Innovation:</strong> We constantly push the boundaries of what's possible in digital art presentation</li>
+                        <li><strong>Inclusivity:</strong> We believe art should be accessible to everyone, regardless of location or background</li>
+                        <li><strong>Authenticity:</strong> We showcase artists with unique voices and genuine creative expression</li>
+                        <li><strong>Community:</strong> We foster meaningful connections between artists and art enthusiasts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section gray-bg">
+        <div class="container">
+            <div class="section-title">
+                <h2>Meet Our Team</h2>
+            </div>
+            
+            <div class="team-container">
+                <div class="team-members">
+                    {% if team_members %}
+                        {% for member in team_members %}
+                        <div class="team-member">
+                            <div class="member-img">
+                                {% if member.image %}
+                                    <img src="{{ member.image.url }}" alt="{{ member.name }}">
+                                {% else %}
+                                    <img src="{% static 'images/placeholder.jpg' %}" alt="{{ member.name }}">
+                                {% endif %}
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">{{ member.name }}</h3>
+                                <span class="member-title">{{ member.title }}</span>
+                                <p>{{ member.bio }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="{% static 'images/kashvi.jpg' %}" alt="Kashvi Arora">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Kashvi Arora</h3>
+                            <span class="member-title">Founder & UX Director</span>
+                            <p>Kashvi is the visionary force behind Qala. As an AI student with a profound appreciation for art, she bridges the worlds of technology and creativity. Her expertise in user experience design ensures that navigating our digital gallery feels as intuitive and inspiring as walking through a physical exhibition space.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="{% static 'images/navjot.jpg' %}" alt="Navjot">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Navjot</h3>
+                            <span class="member-title">Technical Director</span>
+                            <p>With exceptional development skills and technical knowledge, Navjot is the architectural mastermind of Qala. He transforms creative concepts into functional reality, building robust backend systems that power our platform. His expertise ensures that Qala operates seamlessly across all devices.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="{% static 'images/loveena.jpg' %}" alt="Loveena">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Loveena</h3>
+                            <span class="member-title">Creative Director</span>
+                            <p>Loveena brings artworks to life through her exceptional design skills. As our Creative Director, she crafts the visual language of Qala, ensuring that each piece of art is presented in its best light. Her keen understanding of aesthetics creates visually stunning layouts that enhance the viewing experience.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="{% static 'images/khushi.jpg' %}" alt="Khushi">
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">Khushi</h3>
+                            <span class="member-title">Content Curator</span>
+                            <p>With a meticulous eye for detail and deep understanding of both artistic merit and technological presentation, Khushi manages our content strategy. She works directly with artists to ensure their work is showcased professionally and meaningfully. Her thoughtful approach to curation helps create cohesive collections.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="collaborative-spirit">
+        <div class="container">
+            <h2>Our Collaborative Spirit</h2>
+            <p>What makes Qala special is the synergy between our team members. Each brings unique perspectives and complementary skills, working together to create something greater than the sum of its parts. Our shared passion for art and technology drives us to continuously innovate and improve the platform.</p>
+            <p>We invite you to join us on this journey as we explore the infinite possibilities at the intersection of art and technology.</p>
+            <a href="{% url 'gallery' %}" class="call-to-action">Explore Our Gallery</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Qala</div>
+                <div class="social-links">
+                    <a href="{{ social_links.facebook }}">Facebook</a>
+                    <a href="https://www.instagram.com/art_of_qala?igsh=MzlxdWt0MTJuNDlm">Instagram</a>
+                    <a href="{{ social_links.twitter }}">Twitter</a>
+                    <a href="{{ social_links.linkedin }}">LinkedIn</a>
+                </div>
+                <p class="copyright">© {% now "Y" %} Qala Art Gallery. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+                
+                // Close mobile menu if open
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        
+        // Sticky header effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.backgroundColor = 'var(--primary-color)';
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qala | Shop Original Paintings</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2a2a2a;
+            --secondary: #5a3921;
+            --accent: #d4af37;
+            --light: #f9f9f9;
+            --gray: #e0e0e0;
+            --dark-gray: #777;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; color: var(--primary); background-color: white; line-height: 1.6; }
+        header { padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; background-color: white; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--secondary); font-weight: 700; letter-spacing: 1px; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 1.8rem; }
+        nav ul li a { color: var(--primary); text-decoration: none; font-weight: 400; letter-spacing: 0.5px; transition: color 0.3s; font-size: 0.95rem; }
+        nav ul li a:hover { color: var(--secondary); }
+        .cart-icon { position: relative; cursor: pointer; margin-left: 1.5rem; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--accent); color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; font-weight: bold; }
+        .profile-icon {
+            position: relative;
+            cursor: pointer;
+            margin-left: 1.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--secondary);
+            transition: all 0.3s;
+        }
+        .profile-icon:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+        .profile-popup {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 200px;
+            padding: 15px;
+            display: none;
+            z-index: 100;
+        }
+        .profile-popup.show {
+            display: block;
+        }
+        .user-info {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .username {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        .email {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+        }
+        .logout-btn {
+            width: 100%;
+            padding: 8px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            color: #ff4a4a;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-btn:hover {
+            background: var(--light);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin-bottom: 1rem; line-height: 1.2; }
+        .hero-subtitle { font-size: 1.2rem; margin-bottom: 2rem; font-weight: 300; }
+        .hero-btn { padding: 1rem 2.5rem; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+        .hero-btn:hover { background: #e5c04d; transform: translateY(-2px); }
+        .shop-container { max-width: 1400px; margin: 3rem auto; padding: 0 5%; }
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .product-card { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .product-image-container { position: relative; overflow: hidden; height: 300px; background-color: var(--light); }
+        .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .product-image { transform: scale(1.05); }
+        .product-actions { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 1rem; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); transform: translateY(100%); transition: transform 0.3s ease; }
+        .product-card:hover .product-actions { transform: translateY(0); }
+        .quick-view-btn, .add-to-cart-btn { padding: 0.5rem 1rem; border: none; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; }
+        .quick-view-btn { background: white; color: var(--primary); }
+        .add-to-cart-btn { background: var(--accent); color: white; }
+        .quick-view-btn:hover { background: var(--gray); }
+        .add-to-cart-btn:hover { background: #c19b2f; }
+        .product-info { padding: 1rem 0; }
+        .product-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .product-artist { font-size: 0.9rem; color: var(--dark-gray); margin-bottom: 0.5rem; }
+        .product-price { font-weight: 500; color: var(--secondary); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-content { background: white; width: 80%; max-width: 900px; max-height: 90vh; display: flex; overflow: auto; border-radius: 8px; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3); }
+        .modal-image { width: 50%; object-fit: cover; }
+        .modal-details { width: 50%; padding: 2rem; display: flex; flex-direction: column; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--secondary); }
+        .modal-artist { font-size: 1.1rem; color: var(--dark-gray); margin-bottom: 1.5rem; }
+        .modal-price { font-size: 1.5rem; font-weight: 500; margin-bottom: 1.5rem; color: var(--secondary); }
+        .modal-description { margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.7; }
+        .modal-meta { display: flex; gap: 2rem; margin-bottom: 2rem; font-size: 0.9rem; }
+        .modal-meta span { display: block; color: var(--dark-gray); margin-bottom: 0.3rem; font-size: 0.8rem; }
+        .modal-actions { display: flex; gap: 1rem; margin-top: auto; }
+        .modal-btn { padding: 0.8rem 1.5rem; border: none; border-radius: 4px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; }
+        .modal-btn-primary { background: var(--accent); color: white; }
+        .modal-btn-primary:hover { background: #c19b2f; }
+        .modal-btn-secondary { background: none; border: 1px solid var(--gray); color: var(--primary); }
+        .modal-btn-secondary:hover { background: var(--light); }
+        .close-modal { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; cursor: pointer; color: var(--dark-gray); }
+        .mobile-cart-btn { display: none; position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background: var(--accent); color: white; border-radius: 50%; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); z-index: 100; cursor: pointer; }
+        .cart-dropdown { position: absolute; top: 100%; right: 0; width: 350px; background: white; border-radius: 8px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); padding: 1.5rem; display: none; z-index: 100; }
+        .cart-items { max-height: 300px; overflow-y: auto; margin-bottom: 1.5rem; }
+        .cart-item { display: flex; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray); }
+        .cart-item-image { width: 70px; height: 70px; object-fit: cover; margin-right: 1rem; }
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-title { font-weight: 500; margin-bottom: 0.3rem; }
+        .cart-item-artist { font-size: 0.8rem; color: var(--dark-gray); margin-bottom: 0.5rem; }
+        .cart-item-price { font-weight: 500; }
+        .remove-item { color: var(--dark-gray); cursor: pointer; font-size: 0.8rem; }
+        .cart-total { display: flex; justify-content: space-between; font-weight: 500; margin-bottom: 1.5rem; }
+        .checkout-btn { width: 100%; padding: 0.8rem; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .empty-cart { text-align: center; padding: 2rem 0; color: var(--dark-gray); }
+        @media (max-width: 1024px) {
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-content { flex-direction: column; width: 90%; }
+            .modal-image { width: 100%; height: 300px; }
+            .modal-details { width: 100%; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 1rem 5%; }
+            nav ul { display: none; }
+            .products-grid { grid-template-columns: 1fr; }
+            .mobile-cart-btn { display: flex; }
+            .cart-dropdown { width: 300px; right: -50px; }
+        }
+        .hero-banner {
+            position: relative;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: white;
+        }
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{% static "images/pic.png" %}');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            text-align: center;
+            padding: 0 5%;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(10px); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">QALA</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-right">
+            <div class="cart-icon" id="cartIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <div class="cart-count" id="cartCount">0</div>
+                <div class="cart-dropdown" id="cartDropdown">
+                    <div class="cart-items" id="cartItems">
+                        <div class="empty-cart">Your cart is empty</div>
+                    </div>
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+                </div>
+            </div>
+            <div class="profile-icon" id="profileIcon">
+                <i class="fas fa-user"></i>
+                <div class="profile-popup" id="profilePopup">
+                    <div class="user-info">
+                        <div class="username" id="username">John Doe</div>
+                        <div class="email" id="userEmail">john@example.com</div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-banner">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Discover Timeless Masterpieces</h1>
+            <p class="hero-subtitle">Own a piece of art that speaks to your soul. Curated collection of original paintings from emerging and established artists.</p>
+            <button class="hero-btn" id="browseBtn">Browse Collection</button>
+        </div>
+    </section>
+
+    <div class="shop-container">
+        <main class="products-grid" id="productsGrid">
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://m.media-amazon.com/images/I/91PeFpf5NNL._AC_UF894,1000_QL80_.jpg" alt="The Starry Night" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="1" data-title="The Starry Night" data-artist="Vincent van Gogh" data-price="1250" data-img="https://m.media-amazon.com/images/I/91PeFpf5NNL._AC_UF894,1000_QL80_.jpg" data-description="The painting is dominated by a swirling, turbulent sky with deep blues and vibrant yellows, evoking both awe and restlessness." data-year="1889" data-dimensions="73.7 cm × 92.1 cm" data-medium="Oil on Canvas" data-url="https://en.wikipedia.org/wiki/The_Starry_Night">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="1" data-title="The Starry Night" data-artist="Vincent van Gogh" data-price="1250" data-img="https://m.media-amazon.com/images/I/91PeFpf5NNL._AC_UF894,1000_QL80_.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">The Starry Night</h3>
+                    <p class="product-artist">by Vincent van Gogh</p>
+                    <p class="product-price">$1250</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.saatchiart.com/saatchi/247461/art/3717192/2787076-HSC00001-7.jpg" alt="Les Femmes d’Alger (Version O)" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="2" data-title="Les Femmes d’Alger (Version O)" data-artist="Pablo Picasso" data-price="2400" data-img="https://images.saatchiart.com/saatchi/247461/art/3717192/2787076-HSC00001-7.jpg" data-description="A vibrant composition featuring abstracted figures in rich colors, inspired by Delacroix's work." data-year="1955" data-dimensions="114 cm × 146.4 cm" data-medium="Oil on Canvas" data-url="https://en.wikipedia.org/wiki/Les_Femmes_d%27Alger">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="2" data-title="Les Femmes d’Alger (Version O)" data-artist="Pablo Picasso" data-price="2400" data-img="https://images.saatchiart.com/saatchi/247461/art/3717192/2787076-HSC00001-7.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Les Femmes d’Alger (Version O)</h3>
+                    <p class="product-artist">by Pablo Picasso</p>
+                    <p class="product-price">$2400</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSp0KWxnySgyOcD7s2fSWVIUhozVuUzTfyZxMyc0minGIR9iITyU3rAxfjuh3f2udbfaOTqC7im2A7e1JACoWTMj90uyoHQFI0zGHq2YuIPyKyLE0iSLMGIy9Ji5b3LzAl6XBwdkOvPLHU/w1200-h630-p-k-no-nu/sunrise.jpg" alt="Impression, Sunrise" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="3" data-title="Impression, Sunrise" data-artist="Claude Monet" data-price="3150" data-img="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSp0KWxnySgyOcD7s2fSWVIUhozVuUzTfyZxMyc0minGIR9iITyU3rAxfjuh3f2udbfaOTqC7im2A7e1JACoWTMj90uyoHQFI0zGHq2YuIPyKyLE0iSLMGIy9Ji5b3LzAl6XBwdkOvPLHU/w1200-h630-p-k-no-nu/sunrise.jpg" data-description="A serene depiction of a harbor at sunrise, with soft oranges and blues blending into a misty atmosphere." data-year="1872" data-dimensions="48 cm × 63 cm" data-medium="Oil on Canvas" data-url="https://en.wikipedia.org/wiki/Impression,_Sunrise">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="3" data-title="Impression, Sunrise" data-artist="Claude Monet" data-price="3150" data-img="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSp0KWxnySgyOcD7s2fSWVIUhozVuUzTfyZxMyc0minGIR9iITyU3rAxfjuh3f2udbfaOTqC7im2A7e1JACoWTMj90uyoHQFI0zGHq2YuIPyKyLE0iSLMGIy9Ji5b3LzAl6XBwdkOvPLHU/w1200-h630-p-k-no-nu/sunrise.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Impression, Sunrise</h3>
+                    <p class="product-artist">by Claude Monet</p>
+                    <p class="product-price">$3150</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://www.sothebysinstitute.com/wp-content/uploads/2015/10/warhol-cc-144_banner.jpg" alt="Silver Car Crash (Double Disaster)" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="4" data-title="Silver Car Crash (Double Disaster)" data-artist="Andy Warhol" data-price="1800" data-img="https://www.sothebysinstitute.com/wp-content/uploads/2015/10/warhol-cc-144_banner.jpg" data-description="A stark silkscreen of a car crash in silver and black, exploring themes of mortality and media." data-year="1963" data-dimensions="267.3 cm × 416.9 cm" data-medium="Silkscreen ink on canvas" data-url="https://en.wikipedia.org/wiki/Silver_Car_Crash_(Double_Disaster)">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="4" data-title="Silver Car Crash (Double Disaster)" data-artist="Andy Warhol" data-price="1800" data-img="https://www.sothebysinstitute.com/wp-content/uploads/2015/10/warhol-cc-144_banner.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Silver Car Crash (Double Disaster)</h3>
+                    <p class="product-artist">by Andy Warhol</p>
+                    <p class="product-price">$1800</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://i.pinimg.com/736x/ac/aa/13/acaa13b229b4b9c4c149378abd99f0dc.jpg" alt="Dreamscape" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="5" data-title="Dreamscape" data-artist="Sofia Petrov" data-price="2750" data-img="https://i.pinimg.com/736x/ac/aa/13/acaa13b229b4b9c4c149378abd99f0dc.jpg" data-description="An ethereal abstract work with flowing colors that evoke a dreamlike state." data-year="2020" data-dimensions="80 cm × 100 cm" data-medium="Acrylic on Canvas" data-url="https://www.saatchiart.com/abstract">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="5" data-title="Dreamscape" data-artist="Sofia Petrov" data-price="2750" data-img="https://i.pinimg.com/736x/ac/aa/13/acaa13b229b4b9c4c149378abd99f0dc.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Dreamscape</h3>
+                    <p class="product-artist">by Sofia Petrov</p>
+                    <p class="product-price">$2750</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://artpostgallery.com/wp-content/uploads/2014/10/david-kim-fall-41-x-41.jpg" alt="Color Fields" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="6" data-title="Color Fields" data-artist="David Kim" data-price="1950" data-img="https://artpostgallery.com/wp-content/uploads/2014/10/david-kim-fall-41-x-41.jpg" data-description="A bold exploration of color and form, with overlapping hues creating depth and movement." data-year="2014" data-dimensions="104 cm × 104 cm" data-medium="Mixed Media on Canvas" data-url="https://artpostgallery.com/david-kim/">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="6" data-title="Color Fields" data-artist="David Kim" data-price="1950" data-img="https://artpostgallery.com/wp-content/uploads/2014/10/david-kim-fall-41-x-41.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Color Fields</h3>
+                    <p class="product-artist">by David Kim</p>
+                    <p class="product-price">$1950</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5" alt="Abstract Composition" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="7" data-title="Abstract Composition" data-artist="Elena Petrova" data-price="1850" data-img="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5" data-description="Vibrant abstract work with bold brushstrokes and dynamic color interplay." data-year="2021" data-dimensions="90 cm × 120 cm" data-medium="Acrylic on Canvas" data-url="https://www.elenavasquez.com/about">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="7" data-title="Abstract Composition" data-artist="Elena Petrova" data-price="1850" data-img="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Abstract Composition</h3>
+                    <p class="product-artist">by Elena Petrova</p>
+                    <p class="product-price">$1850</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1578926375605-eaf7559b1458" alt="Urban Landscape" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="8" data-title="Urban Landscape" data-artist="Marcus Chen" data-price="2200" data-img="https://images.unsplash.com/photo-1578926375605-eaf7559b1458" data-description="Contemporary cityscape capturing the energy of modern metropolitan life." data-year="2020" data-dimensions="80 cm × 100 cm" data-medium="Oil on Canvas" data-url="#">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="8" data-title="Urban Landscape" data-artist="Marcus Chen" data-price="2200" data-img="https://images.unsplash.com/photo-1578926375605-eaf7559b1458">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Urban Landscape</h3>
+                    <p class="product-artist">by Marcus Chen</p>
+                    <p class="product-price">$2200</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1531913764164-f85c52e6e654" alt="Botanical Study" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="9" data-title="Botanical Study" data-artist="Sophie Laurent" data-price="1650" data-img="https://images.unsplash.com/photo-1531913764164-f85c52e6e654" data-description="Detailed floral study with delicate watercolor techniques." data-year="2019" data-dimensions="50 cm × 70 cm" data-medium="Watercolor on Paper" data-url="https://www.artmajeur.com/sophie-laurent/en">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="9" data-title="Botanical Study" data-artist="Sophie Laurent" data-price="1650" data-img="https://images.unsplash.com/photo-1531913764164-f85c52e6e654">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Botanical Study</h3>
+                    <p class="product-artist">by Sophie Laurent</p>
+                    <p class="product-price">$1650</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0" alt="Coastal Memories" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="10" data-title="Coastal Memories" data-artist="James Wilson" data-price="1950" data-img="https://images.unsplash.com/photo-1547036967-23d11aacaee0" data-description="Impressionistic seascape with textured palette knife work." data-year="2022" data-dimensions="60 cm × 90 cm" data-medium="Oil on Board" data-url="https://artvee.com/dl/coastal-village/">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="10" data-title="Coastal Memories" data-artist="James Wilson" data-price="1950" data-img="https://images.unsplash.com/photo-1547036967-23d11aacaee0">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Coastal Memories</h3>
+                    <p class="product-artist">by James Wilson</p>
+                    <p class="product-price">$1950</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://artevenue.com/static/image_data/POD/images/49_2AA4370_lowres.jpg" alt="Lodge on Lake Como" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="11" data-title="Lodge on Lake Como" data-artist="Carl Frederic Aagaard" data-price="2750" data-img="https://artevenue.com/static/image_data/POD/images/49_2AA4370_lowres.jpg" data-description="Serene lakeside landscape capturing the golden light of dusk on Lake Como's historic villa." data-year="1892" data-dimensions="60 cm × 90 cm" data-medium="Oil on canvas" data-url="https://en.wikipedia.org/wiki/Lake_Como">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="11" data-title="Lodge on Lake Como" data-artist="Carl Frederic Aagaard" data-price="2750" data-img="https://artevenue.com/static/image_data/POD/images/49_2AA4370_lowres.jpg">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Lodge on Lake Como</h3>
+                    <p class="product-artist">by Carl Frederic Aagaard</p>
+                    <p class="product-price">$2750</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1578926375605-eaf7559b1458" alt="Minimalist Forms" class="product-image" onerror="this.src='https://via.placeholder.com/300?text=Image+Not+Found';">
+                    <div class="product-actions">
+                        <button class="quick-view-btn" data-id="12" data-title="Minimalist Forms" data-artist="Carlos Mendez" data-price="1750" data-img="https://images.unsplash.com/photo-1578926375605-eaf7559b1458" data-description="Clean geometric composition exploring space and balance." data-year="2020" data-dimensions="70 cm × 70 cm" data-medium="Acrylic on Wood Panel" data-url="https://en.wikipedia.org/wiki/Carlos_M%C3%A9ndez">Quick View</button>
+                        <button class="add-to-cart-btn" data-id="12" data-title="Minimalist Forms" data-artist="Carlos Mendez" data-price="1750" data-img="https://images.unsplash.com/photo-1578926375605-eaf7559b1458">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Minimalist Forms</h3>
+                    <p class="product-artist">by Carlos Mendez</p>
+                    <p class="product-price">$1750</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="quickViewModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">×</span>
+            <img src="" alt="Artwork" class="modal-image" id="modalImage">
+            <div class="modal-details">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-artist" id="modalArtist"></p>
+                <p class="modal-price" id="modalPrice"></p>
+                <p class="modal-description" id="modalDescription"></p>
+                <div class="modal-meta">
+                    <div><span>Year</span><span id="modalYear"></span></div>
+                    <div><span>Dimensions</span><span id="modalDimensions"></span></div>
+                    <div><span>Medium</span><span id="modalMedium"></span></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-primary" id="modalAddToCart">Add to Cart</button>
+                    <button class="modal-btn modal-btn-secondary" id="modalViewDetails">View Full Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-cart-btn" id="mobileCartBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <div class="cart-count" id="mobileCartCount">0</div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
+        let currentProduct = null;
+
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.getElementById('cartCount');
+        const mobileCartCount = document.getElementById('mobileCartCount');
+        const cartDropdown = document.getElementById('cartDropdown');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const mobileCartBtn = document.getElementById('mobileCartBtn');
+        const browseBtn = document.getElementById('browseBtn');
+        const quickViewModal = document.getElementById('quickViewModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalArtist = document.getElementById('modalArtist');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalYear = document.getElementById('modalYear');
+        const modalDimensions = document.getElementById('modalDimensions');
+        const modalMedium = document.getElementById('modalMedium');
+        const modalAddToCart = document.getElementById('modalAddToCart');
+        const modalViewDetails = document.getElementById('modalViewDetails');
+        const profileIcon = document.getElementById('profileIcon');
+        const profilePopup = document.getElementById('profilePopup');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        cartIcon.addEventListener('click', toggleCartDropdown);
+        mobileCartBtn.addEventListener('click', toggleCartDropdown);
+        browseBtn.addEventListener('click', () => {
+            document.querySelector('.shop-container').scrollIntoView({ behavior: 'smooth' });
+        });
+        closeModalBtn.addEventListener('click', closeQuickView);
+        modalAddToCart.addEventListener('click', addCurrentToCart);
+        modalViewDetails.addEventListener('click', viewFullDetails);
+        checkoutBtn.addEventListener('click', proceedToCheckout);
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profilePopup.classList.toggle('show');
+        });
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('qalaCart');
+            profilePopup.classList.remove('show');
+            showNotification('You have successfully logged out');
+            setTimeout(() => {
+                window.location.href = '{% url "login" %}';
+            }, 1000);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-view-btn')) {
+                const product = {
+                    id: e.target.dataset.id,
+                    title: e.target.dataset.title,
+                    artist: e.target.dataset.artist,
+                    price: e.target.dataset.price,
+                    img: e.target.dataset.img,
+                    description: e.target.dataset.description,
+                    year: e.target.dataset.year,
+                    dimensions: e.target.dataset.dimensions,
+                    medium: e.target.dataset.medium,
+                    url: e.target.dataset.url
+                };
+                openQuickView(product);
+            } else if (e.target.classList.contains('add-to-cart-btn')) {
+                const product = {
+                    id: e.target.dataset.id,
+                    title: e.target.dataset.title,
+                    artist: e.target.dataset.artist,
+                    price: e.target.dataset.price,
+                    img: e.target.dataset.img
+                };
+                addToCart(product);
+            } else if (e.target.classList.contains('remove-item')) {
+                const id = e.target.dataset.id;
+                removeFromCart(id);
+            }
+            if (!profileIcon.contains(e.target) && !profilePopup.contains(e.target)) {
+                profilePopup.classList.remove('show');
+            }
+            if (!cartIcon.contains(e.target) && !cartDropdown.contains(e.target) && !mobileCartBtn.contains(e.target)) {
+                cartDropdown.style.display = 'none';
+            }
+            if (e.target === quickViewModal) closeQuickView();
+        });
+
+        function toggleCartDropdown(e) {
+            e.stopPropagation();
+            cartDropdown.style.display = cartDropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.id === product.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            localStorage.setItem('qalaCart', JSON.stringify(cart));
+            updateCart();
+            showNotification(`${product.title} added to cart`);
+        }
+
+        function addCurrentToCart() {
+            if (currentProduct) addToCart(currentProduct);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            localStorage.setItem('qalaCart', JSON.stringify(cart));
+            updateCart();
+            showNotification('Item removed from cart');
+        }
+
+        function updateCart() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            mobileCartCount.textContent = totalItems;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                cartTotal.textContent = '$0.00';
+            } else {
+                let itemsHTML = '';
+                let total = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.quantity * parseFloat(item.price);
+                    total += itemTotal;
+                    itemsHTML += `
+                        <div class="cart-item">
+                            <img src="${item.img}" alt="${item.title}" class="cart-item-image" onerror="this.src='https://via.placeholder.com/70?text=Image+Not+Found';">
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${item.title}</div>
+                                <div class="cart-item-artist">by ${item.artist}</div>
+                                <div class="cart-item-price">$${item.price} x ${item.quantity}</div>
+                                <div class="remove-item" data-id="${item.id}">Remove</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = itemsHTML;
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        function openQuickView(product) {
+            currentProduct = product;
+            modalImage.src = product.img;
+            modalTitle.textContent = product.title;
+            modalArtist.textContent = `by ${product.artist}`;
+            modalPrice.textContent = `$${product.price}`;
+            modalDescription.textContent = product.description || 'No description available.';
+            modalYear.textContent = product.year || 'Unknown';
+            modalDimensions.textContent = product.dimensions || 'N/A';
+            modalMedium.textContent = product.medium || 'Unknown';
+            quickViewModal.style.display = 'flex';
+            setTimeout(() => quickViewModal.style.opacity = '1', 10);
+        }
+
+        function closeQuickView() {
+            quickViewModal.style.opacity = '0';
+            setTimeout(() => quickViewModal.style.display = 'none', 300);
+        }
+
+        function viewFullDetails() {
+            if (currentProduct && currentProduct.url) {
+                window.open(currentProduct.url, '_blank');
+            } else {
+                alert(`No detailed page available for ${currentProduct.title}`);
+            }
+            closeQuickView();
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+            } else {
+                localStorage.setItem('qalaCart', JSON.stringify(cart));
+                window.location.href = '{% url "checkout" %}';
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; background-color: var(--accent);
+                color: white; padding: 12px 24px; border-radius: 4px; z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeIn 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        updateCart();
+    </script>
+</body>
+</html>

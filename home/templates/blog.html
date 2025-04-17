@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QALA - Art Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .qala-font {
+      font-family: 'Cinzel', serif;
+    }
+    .modal {
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    .modal-content {
+      background-size: cover;
+      background-position: center;
+    }
+    .modal-overlay {
+      backdrop-filter: blur(20px);
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    /* Sidebar Menu */
+    .dot-menu {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 30px;
+      cursor: pointer;
+      color: #fff;
+      z-index: 1000;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: -250px;
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      transition: left 0.3s ease;
+      padding-top: 50px;
+      z-index: 999;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen">
+
+  <!-- Floating shimmer -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute w-full h-full animate-pulse opacity-10 bg-gradient-to-br from-white/5 via-white/10 to-white/5"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="text-center py-12 z-10 relative">
+    <h1 class="text-6xl qala-font tracking-widest">QALA</h1>
+    <p class="mt-2 text-gray-400 text-lg italic">Art. Soul. Expression.</p>
+  </header>
+  <!-- Sidebar Toggle Button -->
+  <div class="dot-menu" onclick="toggleSidebar()">⋮</div>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#">Viewing Room</a></li>
+      <li><a href="{% url 'auction' %}">Auction</a></li>
+      <li><a href="{% url 'blog' %}">Blog</a></li>
+      <li><a href="#">3-D Room</a></li>
+    </ul>
+  </div>
+  <!-- Blog Section -->
+  <section class="z-10 relative p-6 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mt-6">
+    <!-- Blog Cards -->
+    <!-- Blog 1 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/736x/87/7e/7c/877e7ced6cc7856fbbe57e05b3c1c445.jpg" alt="Art Image" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">The Whisper of Brush Strokes</h2>
+        <p class="text-gray-300">Every stroke is a silent whisper from the artist's soul.</p>
+        <button onclick="openModal('modal1')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+
+    <!-- Blog 2 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/474x/19/b7/a3/19b7a39d5d89f329b07db901d9fdecf4.jpg" alt="Monochrome Art" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">Monochrome Emotions</h2>
+        <p class="text-gray-300">Feeling the shades beyond color.</p>
+        <button onclick="openModal('modal2')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+
+    <!-- Blog 3 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/736x/7d/de/fb/7ddefb4000872651bbbf3a1a04017bc2.jpg" alt="Canvas" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">Canvas of Dreams</h2>
+        <p class="text-gray-300">Turning imagination into visible magic.</p>
+        <button onclick="openModal('modal3')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+
+    <!-- Blog 4 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/736x/e0/f3/2f/e0f32f14e9064f83f21b9e1701072fe8.jpg" alt="Gallery Image" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">Silhouettes & Stories</h2>
+        <p class="text-gray-300">Where shapes tell stories untold.</p>
+        <button onclick="openModal('modal4')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+
+    <!-- Blog 5 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/736x/28/01/eb/2801eba9ac05e6545cf0a465638cab29.jpg" alt="Textures" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">Textured Thoughts</h2>
+        <p class="text-gray-300">Art you can feel, even with your eyes closed.</p>
+        <button onclick="openModal('modal5')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+
+    <!-- Blog 6 -->
+    <div class="bg-black rounded-2xl shadow-xl transform hover:scale-105 transition duration-300 overflow-hidden border border-white/10">
+      <img src="https://i.pinimg.com/736x/d8/2e/0f/d82e0f0ea9c44335aeb5fbe0d7f03ccc.jpg" alt="Faces" class="w-full h-48 object-cover" />
+      <div class="p-5">
+        <h2 class="text-2xl qala-font mb-2">Faces of Feelings</h2>
+        <p class="text-gray-300">Portraits that mirror your soul.</p>
+        <button onclick="openModal('modal6')" class="mt-4 text-white underline hover:text-gray-300">Read More</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODALS -->
+  <!-- Just update image + content per modal -->
+  <div id="modal1" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/736x/87/7e/7c/877e7ced6cc7856fbbe57e05b3c1c445.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">The Whisper of Brush Strokes</h3>
+        <p>Each brush stroke holds a secret — a soft whisper from the artist’s soul to the canvas. It’s not just paint; it’s emotion captured mid-breath, frozen in color and movement.
+          From the first gentle sweep of bristles to the bold, defiant strike of color, every stroke tells a story untold in words. It’s where silence becomes expression — where a single line can speak louder than a thousand voices.
+        
+          Brush strokes don’t shout; they murmur emotions. Joy dances in curved swirls, sorrow hides in muted tones, and hope glimmers in golden highlights. The canvas listens, absorbs, and reflects every whisper with grace.
+          
+          To the outside world, it’s just a painting. But to those who look closer, it’s a diary of the unseen — heartbreaks, dreams, memories, all woven into the layers of paint.
+          
+          In the quiet of a studio, when the world fades and only the hum of creation remains, that’s when brush strokes whisper the loudest.
+          
+          Every smudge, every drip, every accidental curve — nothing is random. They are the echoes of a creative heart, trying to connect, to heal, to be understood.
+          
+          So next time you stand before a painting, don’t just look… listen.
+          </p>
+        <button onclick="closeModal('modal1')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal2" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/474x/19/b7/a3/19b7a39d5d89f329b07db901d9fdecf4.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">Monochrome Emotions</h3>
+        <p>where feelings live in shades of grey.
+
+          Not every emotion demands color. Sometimes, the deepest feelings bleed out in black and white — raw, unfiltered, and honest.
+          
+          Monochrome emotions don’t need the brightness of reds or the calm of blues. They sit quietly in the grayscale — lingering between extremes, in the in-between spaces where real stories unfold.
+          
+          A black line across a white page can feel heavier than any rainbow. Because in monochrome, there's nowhere to hide. No distractions. Just feeling.
+          
+          Grief, solitude, nostalgia — they all look different in monochrome. A tear isn’t blue here… it’s a soft grey stain on a memory. Laughter isn't gold, but a fleeting lightness in a sea of shade.
+          
+          There’s beauty in the absence of color. It forces us to see. To notice the subtle shifts, the way light kisses the dark, the silence between loud moments.
+          
+          Monochrome is not the absence of feeling — it’s the amplification of truth. It strips away the drama and leaves behind the core.
+          The real.
+          The raw.
+          The you.
+          
+          So the next time you feel overwhelmed by the chaos of colors — step into the grayscale.
+          And listen.
+          Because sometimes, the quietest emotions leave the loudest mark.</p>
+        <button onclick="closeModal('modal2')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal3" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/736x/7d/de/fb/7ddefb4000872651bbbf3a1a04017bc2.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">Canvas of Dreams</h3>
+        <p>where imagination finds its forever home.
+
+          Each night, as the world winds down and reality softens its grip, a new canvas is stretched across the skies of our minds — blank, waiting, infinite.
+          
+          On this canvas of dreams, logic dissolves. Time bends. Here, you can fly without wings, speak without words, and relive moments you thought you’d forgotten.
+          
+          It’s a place where your heart becomes the brush, and your mind holds the colors — vibrant hopes, gentle memories, and wild, untamed fantasies.
+          
+          Some dreams paint peace — soft pastels swirling like clouds, where everything makes sense and nothing hurts. Others are bold, messy, filled with splashes of curiosity and shadows of fear. But each stroke, no matter how strange, has meaning.
+          
+          Dreams are not just escapes — they are reflections of who we are when no one’s watching.
+          
+          Maybe the canvas shows you your future in fragments.
+          Maybe it lets you repaint the past.
+          Maybe… it’s where your truest self creates art that waking eyes will never see.
+          
+          And when you wake up, those strokes remain somewhere inside you — little sparks of wonder, whispering inspiration into your day.
+          
+          So sleep gently tonight, dear dreamer.
+          There’s a fresh canvas waiting — and the stars are already watching.</p>
+        <button onclick="closeModal('modal3')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal4" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/736x/e0/f3/2f/e0f32f14e9064f83f21b9e1701072fe8.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">Silhouettes & Stories</h3>
+        <p>— because every shadow has something to say.
+
+          Behind every silhouette lies a story untold — a quiet echo of someone’s journey, frozen in the softness of light and shadow.
+          
+          A silhouette is more than an outline; it’s the shape of emotion, a trace of presence without the need for details. It’s how the soul looks when the world turns off the lights.
+          
+          You see them in train windows, dancing through curtains, resting against walls during golden hour — each one holding secrets that only silence understands.
+          
+          Maybe it’s a girl standing alone under a streetlamp, her shadow stretched longer than her thoughts. Or a couple holding hands at sunset — their love captured in the simplest of forms, no color needed.
+          
+          Some silhouettes carry pain.
+          Some shimmer with dreams.
+          And some are just waiting — to be noticed, to be understood.
+          
+          What makes them powerful is that they leave space for imagination. They don’t tell you the whole story — they invite you to feel it, to wonder. And maybe, in trying to understand them… you understand yourself.
+          
+          Because aren’t we all just a collection of stories?
+          Shaped by light. Defined by shadow.
+          Trying to be seen.</p>
+        <button onclick="closeModal('modal4')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal5" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/736x/28/01/eb/2801eba9ac05e6545cf0a465638cab29.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">Textured Thoughts</h3>
+        <p>Our minds are like canvases, but not the kind you see in art galleries. They’re messy, layered, and full of textures. Some days, our thoughts are as smooth as satin — flowing seamlessly, quiet and calm. But on others, they’re rough like burlap, with sharp edges and raw emotions.
+
+          The texture of a thought can change in a heartbeat. It can feel soft like a whisper, or jagged like a broken glass. And just like the fabric of a well-worn sweater, it carries the imprints of every moment that’s touched it.
+          
+          Some thoughts are delicate, barely there, like a soft breeze that ruffles the pages of your notebook. They flutter in, leaving traces of curiosity or wonder — unspoken, but deeply felt.
+          
+          Other thoughts are thick and heavy, like the feel of clay under your fingertips. You knead them, turn them over, and try to mold them into something clearer. Yet they resist, stubborn in their complexity, refusing to be shaped until you allow them to breathe and unravel on their own.
+          
+          Then there are the thoughts that are sharp — like the texture of cracked glass, jagged and uncomfortable. They pierce your quiet moments, pushing you to question, to act, to move.
+          
+          Yet, it’s these textured thoughts that give our minds their depth, their beauty. The smooth ones help us find peace, the rough ones teach us strength, and the sharp ones awaken us to growth.
+          
+          When you look at your thoughts, don’t just glance. Feel them. Embrace their texture, because they’re more than the surface. They’re your essence — layered, imperfect, and uniquely you.</p>
+        <button onclick="closeModal('modal5')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal6" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="modal-content w-full h-full flex items-center justify-center" style="background-image: url('https://i.pinimg.com/736x/d8/2e/0f/d82e0f0ea9c44335aeb5fbe0d7f03ccc.jpg');">
+      <div class="modal-overlay p-8 rounded-xl max-w-xl text-white text-center">
+        <h3 class="text-3xl qala-font mb-4">Faces of Feelings</h3>
+        <p>Every feeling has a face — not always visible, but always real.
+          Some smile even when they’re hurting. Some frown even when they’re safe. Some stay still, silent, unreadable… yet heavy with meaning.
+          
+          Joy wears the face of sparkling eyes and uncontained laughter — but sometimes, it’s just a quiet moment of peace, a gentle sigh of "I made it."
+          
+          Sadness isn’t always tears. It can be found in blank stares, in the forced smile you give at dinner, or in the way someone clutches a coffee cup a little too tightly — like they’re holding on to something more than warmth.
+          
+          Anger wears fire — but not just in shouting. Sometimes, it looks like clenched fists under the table. Like silence so loud it echoes. Like walking away without a word.
+          
+          Love has endless faces. It’s the soft gaze across a crowded room, the forehead kiss, the late-night texts, the “have you eaten?” It’s loud, it’s quiet, it’s confusing — and still, it’s everything.
+          
+          And then there’s fear — sometimes with wide eyes and shaking hands, other times masked as confidence, faked smiles, or overly rehearsed answers.
+          
+          Our emotions are artists, constantly painting on our faces — even when we don’t notice.
+          And sometimes, the most beautiful art is the one hidden behind the eyes — the kind you have to feel to truly see.
+          
+          So next time you look at someone… pause.
+          Every face is a gallery of feelings. And every feeling has a face worth understanding.
+          
+          </p>
+        <button onclick="closeModal('modal6')" class="mt-6 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-20 p-6 text-gray-500 z-10 relative">
+    © 2025 QALA Art Gallery. Elegance in every brush stroke.
+  </footer>
+
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
+    function toggleSidebar() {
+      var sidebar = document.getElementById('sidebar');
+      sidebar.style.left = (sidebar.style.left === '0px') ? '-250px' : '0px';
+    }
+
+    function openModal(src) {
+      var modal = document.getElementById('modal');
+      var modalImg = document.getElementById('modal-img');
+      modal.style.display = 'flex';
+      modalImg.src = src;
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
