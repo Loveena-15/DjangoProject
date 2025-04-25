@@ -7,6 +7,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Profile Icon */
+.profile-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.profile-icon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  padding: 10px;
+  display: none;
+}
+
+.profile-dropdown.active {
+  display: block;
+}
+
+.user-info {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 10px;
+}
+
+.username {
+  font-weight: bold;
+  color: white;
+}
+
+.email {
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-links a {
+  display: block;
+  padding: 8px 10px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.profile-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
     .qala-font {
       font-family: 'Cinzel', serif;
     }
@@ -77,7 +136,19 @@
   <div class="fixed inset-0 pointer-events-none z-0">
     <div class="absolute w-full h-full animate-pulse opacity-10 bg-gradient-to-br from-white/5 via-white/10 to-white/5"></div>
   </div>
-
+<!-- Profile Icon -->
+<div class="profile-icon" onclick="toggleProfile()">
+  <img src="https://i.pravatar.cc/150?img=58" alt="Profile">
+  <div class="profile-dropdown" id="profileDropdown">
+    <div class="user-info">
+      <div class="username" id="username">{{ username }}</div>
+      <div class="email" id="userEmail">{{ email }}</div>
+    </div>
+    <div class="profile-links">
+    <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+</div>
   <!-- Header -->
   <header class="text-center py-12 z-10 relative">
     <h1 class="text-6xl qala-font tracking-widest">QALA</h1>
@@ -89,7 +160,7 @@
   <!-- Sidebar Menu -->
   <div class="sidebar" id="sidebar">
     <ul>
-      <li><a href="#">Viewing Room</a></li>
+      <li><a href="{% url 'gallery' %}">Viewing Room</a></li>
       <li><a href="{% url 'auction' %}">Auction</a></li>
       <li><a href="{% url 'blog' %}">Blog</a></li>
       <li><a href="#">3-D Room</a></li>
@@ -320,7 +391,7 @@
     </div>
   </div>
 
-  <!-- Footer -->
+
   <footer class="text-center mt-20 p-6 text-gray-500 z-10 relative">
     © 2025 QALA Art Gallery. Elegance in every brush stroke.
   </footer>
@@ -348,6 +419,50 @@
     function closeModal() {
       document.getElementById('modal').style.display = 'none';
     }
+
+function toggleProfile() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('active');
+}
+
+
+document.addEventListener('click', function(event) {
+  const profileIcon = document.querySelector('.profile-icon');
+  const dropdown = document.getElementById('profileDropdown');
+  
+  if (!profileIcon.contains(event.target) && dropdown.classList.contains('active')) {
+    dropdown.classList.remove('active');
+  }
+});
+
+ function openModal(modalId) {
+  document.getElementById(modalId).classList.remove('hidden');
+  document.body.style.overflow = 'hidden'; 
+}
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.add('hidden');
+  document.body.style.overflow = 'auto'; 
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.style.left = sidebar.style.left === '0px' ? '-250px' : '0px';
+}
+
+function toggleProfile() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('active');
+}
+
+document.addEventListener('click', function(event) {
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    if (event.target === modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+  });
+});
   </script>
 
 </body>

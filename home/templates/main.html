@@ -129,30 +129,102 @@
       max-height: 80%;
       border-radius: 10px;
     }
+    /* Profile Icon */
+.profile-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.profile-icon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  padding: 10px;
+  display: none;
+}
+
+.profile-dropdown.active {
+  display: block;
+}
+
+.user-info {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 10px;
+}
+
+.username {
+  font-weight: bold;
+  color: white;
+}
+
+.email {
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-links a {
+  display: block;
+  padding: 8px 10px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.profile-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
   </style>
 </head>
 <body>
+  
+<div class="profile-icon" onclick="toggleProfile()">
+  <img src="https://i.pravatar.cc/150?img=58" alt="Profile">
+  <div class="profile-dropdown" id="profileDropdown">
+    <div class="user-info">
+      <div class="username" id="username">{{ username }}</div>
+      <div class="email" id="userEmail">{{ email }}</div>
+    </div>
+    <div class="profile-links">
+    <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+</div>
   <header>
     <div class="title">QALA</div>
   </header>
 
-  <!-- Sidebar Toggle Button -->
+
   <div class="dot-menu" onclick="toggleSidebar()">⋮</div>
 
-  <!-- Sidebar Menu -->
+
   <div class="sidebar" id="sidebar">
     <ul>
-      <li><a href="#">Viewing Room</a></li>
+      <li><a href="{% url 'gallery' %}">Viewing Room</a></li>
       <li><a href="{% url 'auction' %}">Auction</a></li>
       <li><a href="{% url 'blog' %}">Blog</a></li>
       <li><a href="#">3-D Room</a></li>
     </ul>
   </div>
 
-  <!-- Viewing Room Title -->
+
   <div class="viewing-room-label">Viewing Room</div>
 
-  <!-- Gallery Section -->
+
   <section class="gallery">
     <img src="https://i.pinimg.com/736x/25/10/ad/2510ad882724fbb3743324e1b4ae9cce.jpg" alt="Art 1" onclick="openModal(this.src)">
     <img src="https://i.pinimg.com/736x/e0/f3/2f/e0f32f14e9064f83f21b9e1701072fe8.jpg" alt="Art 2" onclick="openModal(this.src)">
@@ -202,6 +274,21 @@
     function closeModal() {
       document.getElementById('modal').style.display = 'none';
     }
+  
+function toggleProfile() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('active');
+}
+
+document.addEventListener('click', function(event) {
+  const profileIcon = document.querySelector('.profile-icon');
+  const dropdown = document.getElementById('profileDropdown');
+  
+  if (!profileIcon.contains(event.target) && dropdown.classList.contains('active')) {
+    dropdown.classList.remove('active');
+  }
+});
+
   </script>
 </body>
 </html>

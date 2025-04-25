@@ -573,7 +573,6 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const navLinks = document.querySelector('.nav-links');
         
@@ -581,7 +580,6 @@
             navLinks.classList.toggle('active');
         });
         
-        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -597,14 +595,13 @@
                     });
                 }
                 
-                // Close mobile menu if open
+    
                 if (navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                 }
             });
         });
         
-        // Sticky header effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 100) {

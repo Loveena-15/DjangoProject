@@ -237,8 +237,8 @@
                 <i class="fas fa-user"></i>
                 <div class="profile-popup" id="profilePopup">
                     <div class="user-info">
-                        <div class="username" id="username">John Doe</div>
-                        <div class="email" id="userEmail">john@example.com</div>
+                        <div class="username" id="username">{{ username }}</div>
+                        <div class="email" id="userEmail">{{ email }}</div>
                     </div>
                     <button class="logout-btn" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i> Log Out
@@ -510,7 +510,7 @@
             setTimeout(() => {
                 window.location.href = '{% url "login" %}';
             }, 1000);
-        });
+        }); 
 
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('quick-view-btn')) {
@@ -661,6 +661,61 @@
         }
 
         updateCart();
+    </script>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        
+            const cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
+            
+    
+            const orderItems = document.querySelector('.order-items');
+            const subtotalEl = document.querySelector('.order-totals div:nth-child(1) span:last-child');
+            const taxEl = document.querySelector('.order-totals div:nth-child(3) span:last-child');
+            const totalEl = document.querySelector('.order-total span:last-child');
+            
+        
+            if (cart.length > 0) {
+                
+                orderItems.innerHTML = '';
+                
+                let subtotal = 0;
+                
+                cart.forEach(item => {
+                    const itemTotal = item.quantity * parseFloat(item.price);
+                    subtotal += itemTotal;
+                    
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+                    orderItem.innerHTML = `
+                        <img src="${item.img}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/70?text=Image+Not+Found';">
+                        <div class="order-item-details">
+                            <div class="order-item-title">${item.title}</div>
+                            <div class="order-item-artist">by ${item.artist}</div>
+                            <div class="order-item-price">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                        </div>
+                    `;
+                    
+                    orderItems.appendChild(orderItem);
+                });
+                
+                const tax = subtotal * 0.1; 
+                const total = subtotal + tax;
+                
+                if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+                if (taxEl) taxEl.textContent = `$${tax.toFixed(2)}`;
+                if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+            }
+            
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    localStorage.removeItem('qalaCart');
+                });
+            }
+        });
     </script>
 </body>
 </html>
