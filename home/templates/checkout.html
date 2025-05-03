@@ -5,8 +5,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | QALA Art Gallery</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700&family=Great+Vibes&family=Cinzel+Decorative&family=Poppins:wght@300;400;700&family=Cormorant+Garamond:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Prata&family=Marcellus&family=Kaushan+Script&family=Alex+Brush&family=Elsie&family=Quintessential&family=Italianno&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap">
     <style>
+        footer {
+            background: black;
+            color: white;
+            padding: 50px 20px;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h2 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-section.social a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .footer-section.social a:hover {
+            color: white;
+        }
+
+        .footer-section.newsletter form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-section.newsletter input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .footer-section.newsletter button {
+            padding: 10px;
+            border: none;
+            background: black;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .footer-section.newsletter button:hover {
+            background: rgb(63, 60, 60);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 15px;
+            background: #070505;
+            margin-top: 20px;
+        }
         :root {
             --primary: #2a2a2a;
             --secondary: #5a3921;
@@ -321,16 +419,56 @@
         </div>
     </div>
 
-    {% if order_success %}
-        <div class="success-popup active">
-            <div class="success-content">
-                <div class="success-icon">✓</div>
-                <h2 class="success-title">Order Placed Successfully!</h2>
-                <p class="success-message">Thank you for your purchase. Your order has been received and is being processed.</p>
-                <a href="{% url 'auctions' %}"><button class="success-button">Continue Shopping</button></a>
+    <div class="success-popup" id="successPopup">
+        <div class="success-content">
+            <div class="success-icon">✓</div>
+            <h3 class="success-title">Order Confirmed!</h3>
+            <p class="success-message">Thank you for your purchase. Your order has been successfully placed.</p>
+            <p class="success-message">Redirecting to home page in <span id="countdown">5</span> seconds...</p>
+            <a href="{% url 'auction' %}" class="success-button">Continue Shopping</a>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section about">
+                <h2>About QALA</h2>
+                <p>QALA is more than an art gallery—it’s a space where creativity breathes, colors speak, and artists connect with the world.</p>
+            </div>
+            <div class="footer-section links">
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h2>Contact Us</h2>
+                <p><i class="fas fa-envelope"></i> contact@qalaart.com</p>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+            </div>
+            <div class="footer-section social">
+                <h2>Follow Us</h2>
+                <a href="https://www.instagram.com/art_of_qala?igsh=MzlxdWt0MTJuNDlm"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.pinterest.com/qala0art23/"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="footer-section newsletter">
+                <h2>Stay Updated</h2>
+                <form action="#">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit">Subscribe</button>
+                </form>
             </div>
         </div>
-    {% endif %}
+        <div class="footer-bottom">
+            <p>© 2025 QALA. All Rights Reserved.</p>
+        </div>
+    </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get cart data from localStorage
@@ -456,6 +594,30 @@
                 document.querySelector('.order-total span:last-child').textContent = '$' + total.toFixed(2);
             }
         });
+        // Make the "Complete Purchase" button show the popup and redirect after a delay
+    document.querySelector(".checkout-btn").addEventListener("click", function(e) {
+        e.preventDefault(); // Stop form submission
+        
+        // Show the success popup
+        document.getElementById("successPopup").classList.add("active");
+        
+        // Set up countdown
+        let seconds = 5;
+        const countdownElement = document.getElementById("countdown");
+        
+        // Update countdown every second
+        const countdownInterval = setInterval(function() {
+            seconds--;
+            countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                // Redirect to home page
+                window.location.href = "{% url 'home' %}";
+            }
+        }, 1000);
+    });
     </script>
+    
 </body>
 </html>

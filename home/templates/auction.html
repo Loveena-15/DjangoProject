@@ -7,6 +7,9 @@
     <title>Qala | Shop Original Paintings</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700&family=Great+Vibes&family=Cinzel+Decorative&family=Poppins:wght@300;400;700&family=Cormorant+Garamond:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Prata&family=Marcellus&family=Kaushan+Script&family=Alex+Brush&family=Elsie&family=Quintessential&family=Italianno&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <style>
         :root {
             --primary: #2a2a2a;
@@ -201,6 +204,103 @@
             from { opacity: 1; transform: translateY(0); }
             to { opacity: 0; transform: translateY(10px); }
         }
+        footer {
+            background: black;
+            color: white;
+            padding: 50px 20px;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h2 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-section.social a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .footer-section.social a:hover {
+            color: white;
+        }
+
+        .footer-section.newsletter form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-section.newsletter input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .footer-section.newsletter button {
+            padding: 10px;
+            border: none;
+            background: black;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .footer-section.newsletter button:hover {
+            background: rgb(63, 60, 60);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 15px;
+            background: #070505;
+            margin-top: 20px;
+        }
+        
     </style>
 </head>
 <body>
@@ -460,6 +560,46 @@
         </svg>
         <div class="cart-count" id="mobileCartCount">0</div>
     </div>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section about">
+                <h2>About QALA</h2>
+                <p>QALA is more than an art gallery—it’s a space where creativity breathes, colors speak, and artists connect with the world.</p>
+            </div>
+            <div class="footer-section links">
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h2>Contact Us</h2>
+                <p><i class="fas fa-envelope"></i> contact@qalaart.com</p>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+            </div>
+            <div class="footer-section social">
+                <h2>Follow Us</h2>
+                <a href="https://www.instagram.com/art_of_qala?igsh=MzlxdWt0MTJuNDlm"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.pinterest.com/qala0art23/"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="footer-section newsletter">
+                <h2>Stay Updated</h2>
+                <form action="#">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 QALA. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script>
         let cart = JSON.parse(localStorage.getItem('qalaCart')) || [];

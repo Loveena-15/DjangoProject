@@ -8,50 +8,6 @@ from .forms import CheckoutForm
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-@require_POST
-def update_cart(request):
-    data = json.loads(request.body)
-    artwork_id = data.get('artwork_id')
-    quantity = data.get('quantity')
-    
-    # Update the cart item in the session or database
-    if request.user.is_authenticated:
-        # Update database cart
-        cart_item = CartItem.objects.get(user=request.user, artwork_id=artwork_id)
-        cart_item.quantity = quantity
-        cart_item.save()
-    else:
-        # Update session cart
-        cart = request.session.get('cart', {})
-        cart[artwork_id] = quantity
-        request.session['cart'] = cart
-    
-    # Calculate new totals
-    # This depends on your cart implementation
-    # Example using a database cart:
-    if request.user.is_authenticated:
-        cart_items = CartItem.objects.filter(user=request.user)
-        subtotal = sum(item.artwork.price * item.quantity for item in cart_items)
-        item = CartItem.objects.get(user=request.user, artwork_id=artwork_id)
-        item_total = item.artwork.price * item.quantity
-    else:
-        # Session cart logic
-        cart = request.session.get('cart', {})
-        # You'll need to fetch artwork prices
-        # This is simplified:
-        artworks = {a.id: a.price for a in Artwork.objects.filter(id__in=cart.keys())}
-        subtotal = sum(artworks[int(id)] * qty for id, qty in cart.items())
-        item_total = artworks[int(artwork_id)] * quantity
-    
-    tax = subtotal * 0.1  # 10% tax rate
-    total = subtotal + tax
-    
-    return JsonResponse({
-        'subtotal': subtotal,
-        'tax': tax,
-        'total': total,
-        'item_total': item_total
-    })
 def signup(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -290,21 +246,40 @@ def auction(request):
     }
     return render(request, 'auction.html', context)
 def checkout(request):
-    form = CheckoutForm()  
+    form = CheckoutForm()
+    cart_items = request.session.get('cart_items', [])
+    subtotal = 0
+    tax = 0
+    total = 0
+    
+    # Calculate cart totals (this would be your actual cart calculation)
+    # For demonstration purposes
     
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            messages.success(request, "Order placed successfully!")
+            # Process the order (this would save to database in a real implementation)
+            # Clear the cart
+            request.session['cart_items'] = []
+            
+            # Return the checkout template with success flag
             return render(request, 'checkout.html', {
                 'form': form,
-                'order_success': True
+                'order_success': True,
+                'cart_items': cart_items,
+                'subtotal': subtotal,
+                'tax': tax,
+                'total': total
             })
     
     return render(request, 'checkout.html', {
         'form': form,
-        'order_success': False
-    })        
+        'order_success': False,
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'tax': tax,
+        'total': total
+    })
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -321,5 +296,6 @@ def about(request):
 def logout_view(request):
     logout(request)
     return redirect('home') 
-def empty_view(request):
-    return HttpResponse("")
+def virtual_gallery(request):
+    return render(request, 'virtual_gallery.html')
+
