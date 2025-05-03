@@ -171,6 +171,40 @@
         .success-button:hover {
             background: #c19b2f;
         }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .quantity-btn {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .quantity-btn:hover {
+            background: #c19b2f;
+        }
+        .quantity {
+            margin: 0 10px;
+            min-width: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .order-item {
+            position: relative;
+        }
+        .order-item-price {
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -248,17 +282,22 @@
             <h2>Your Order</h2>
             <div class="order-items">
                 {% for item in cart_items %}
-                    <div class="order-item">
-                        <img src="{{ item.artwork.image }}" alt="{{ item.artwork.title }}">
-                        <div class="order-item-details">
-                            <div class="order-item-title">{{ item.artwork.title }}</div>
-                            <div class="order-item-artist">by {{ item.artwork.artist }}</div>
-                            <div class="order-item-price">${{ item.total|floatformat:2 }}</div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p>Your cart is empty.</p>
-                {% endfor %}
+    <div class="order-item" data-id="{{ item.artwork.id }}">
+        <img src="{{ item.artwork.image }}" alt="{{ item.artwork.title }}">
+        <div class="order-item-details">
+            <div class="order-item-title">{{ item.artwork.title }}</div>
+            <div class="order-item-artist">by {{ item.artwork.artist }}</div>
+            <div class="quantity-controls">
+                <button type="button" class="quantity-btn minus" data-id="{{ item.artwork.id }}">-</button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button type="button" class="quantity-btn plus" data-id="{{ item.artwork.id }}">+</button>
+            </div>
+            <div class="order-item-price">${{ item.total|floatformat:2 }}</div>
+        </div>
+    </div>
+{% empty %}
+    <p>Your cart is empty.</p>
+{% endfor %}
             </div>
             
             <div class="order-totals">
@@ -294,87 +333,127 @@
     {% endif %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Checkout page loaded");
-            
-            
+            // Get cart data from localStorage
             const cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
             console.log("Cart data:", cart);
             
+            // Check if cart is empty
+            if (cart.length === 0) {
+                document.querySelector('.order-items').innerHTML = '<p>Your cart is empty.</p>';
+                updateOrderTotals(0);
+                return;
+            }
             
-            const orderItems = document.querySelector('.order-items');
-            const subtotalEl = document.querySelector('.order-totals div:nth-child(1) span:last-child');
-            const taxEl = document.querySelector('.order-totals div:nth-child(3) span:last-child');
-            const totalEl = document.querySelector('.order-total span:last-child');
+            // Clear existing items
+            document.querySelector('.order-items').innerHTML = '';
             
+            // Calculate initial totals
+            let subtotal = 0;
             
-            if (cart && cart.length > 0) {
+            // Create HTML for each cart item
+            cart.forEach(item => {
+                subtotal += parseFloat(item.price) * item.quantity;
                 
-                orderItems.innerHTML = '';
-                
-                
-                let subtotal = 0;
-                
-                
-                cart.forEach(item => {
-                    const quantity = item.quantity || 1;
-                    const price = parseFloat(item.price);
-                    const total = price * quantity;
-                    subtotal += total;
-                    
-                    const itemEl = document.createElement('div');
-                    itemEl.className = 'order-item';
-                    itemEl.innerHTML = `
+                const itemHtml = `
+                    <div class="order-item" data-id="${item.id}">
                         <img src="${item.img}" alt="${item.title}">
                         <div class="order-item-details">
                             <div class="order-item-title">${item.title}</div>
                             <div class="order-item-artist">by ${item.artist}</div>
-                            <div class="order-item-price">$${total.toFixed(2)}</div>
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn minus" data-id="${item.id}">-</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button type="button" class="quantity-btn plus" data-id="${item.id}">+</button>
+                            </div>
+                            <div class="order-item-price">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
                         </div>
-                    `;
+                    </div>
+                `;
+                
+                document.querySelector('.order-items').innerHTML += itemHtml;
+            });
+            
+            // Update order summary
+            updateOrderTotals(subtotal);
+            
+            // Add event listeners for quantity buttons
+            const plusButtons = document.querySelectorAll('.quantity-btn.plus');
+            const minusButtons = document.querySelectorAll('.quantity-btn.minus');
+            
+            plusButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    updateQuantity(this, 1);
+                });
+            });
+            
+            minusButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    updateQuantity(this, -1);
+                });
+            });
+            
+            function updateQuantity(button, change) {
+                const artworkId = button.getAttribute('data-id');
+                const orderItem = button.closest('.order-item');
+                const quantityElement = orderItem.querySelector('.quantity');
+                let quantity = parseInt(quantityElement.textContent);
+                
+                quantity += change;
+                
+                // Get cart from localStorage
+                const cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
+                const itemIndex = cart.findIndex(item => item.id == artworkId);
+                
+                if (itemIndex === -1) return;
+                
+                if (quantity <= 0) {
+                    // Remove item from cart if quantity reaches zero
+                    cart.splice(itemIndex, 1);
+                    orderItem.remove();
                     
-                    orderItems.appendChild(itemEl);
+                    // Check if cart is empty after removal
+                    if (cart.length === 0) {
+                        document.querySelector('.order-items').innerHTML = '<p>Your cart is empty.</p>';
+                        updateOrderTotals(0);
+                    }
+                } else {
+                    // Update quantity in UI and cart
+                    quantityElement.textContent = quantity;
+                    cart[itemIndex].quantity = quantity;
+                    
+                    // Update price for this item
+                    const price = parseFloat(cart[itemIndex].price);
+                    const newItemTotal = price * quantity;
+                    orderItem.querySelector('.order-item-price').textContent = '$' + newItemTotal.toFixed(2);
+                }
+                
+                // Save updated cart to localStorage
+                localStorage.setItem('qalaCart', JSON.stringify(cart));
+                
+                // Recalculate totals
+                let subtotal = 0;
+                cart.forEach(item => {
+                    subtotal += parseFloat(item.price) * item.quantity;
                 });
                 
-            
-                const tax = subtotal * 0.1;
-                const total = subtotal + tax;
+                updateOrderTotals(subtotal);
                 
-                subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-                taxEl.textContent = `$${tax.toFixed(2)}`;
-                totalEl.textContent = `$${total.toFixed(2)}`;
+                // Update cart count in header if visible
+                const cartCountEl = document.getElementById('cartCount');
+                if (cartCountEl) {
+                    let totalItems = 0;
+                    cart.forEach(item => totalItems += item.quantity);
+                    cartCountEl.textContent = totalItems;
+                }
             }
             
-            
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    
-                    const popup = document.createElement('div');
-                    popup.className = 'success-popup active';
-                    popup.innerHTML = `
-                        <div class="success-content">
-                            <div class="success-icon">✓</div>
-                            <h2 class="success-title">Order Placed Successfully!</h2>
-                            <p class="success-message">Thank you for your purchase. Your order has been received and is being processed.</p>
-                            <button class="success-button">Continue Shopping</button>
-                        </div>
-                    `;
-                    
-        
-                    document.body.appendChild(popup);
-                    
-                    localStorage.removeItem('qalaCart');
-                    
-                    popup.querySelector('.success-button').addEventListener('click', function() {
-                        window.location.href = '/auction';
-                    });
-        
-                    setTimeout(function() {
-                        window.location.href = '/auction';
-                    }, 4000);
-                });
+            function updateOrderTotals(subtotal) {
+                const tax = subtotal * 0.1; // 10% tax
+                const total = subtotal + tax;
+                
+                document.querySelector('.order-totals div:nth-child(1) span:last-child').textContent = '$' + subtotal.toFixed(2);
+                document.querySelector('.order-totals div:nth-child(3) span:last-child').textContent = '$' + tax.toFixed(2);
+                document.querySelector('.order-total span:last-child').textContent = '$' + total.toFixed(2);
             }
         });
     </script>

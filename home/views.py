@@ -5,6 +5,53 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout
 from .forms import CheckoutForm
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+@require_POST
+def update_cart(request):
+    data = json.loads(request.body)
+    artwork_id = data.get('artwork_id')
+    quantity = data.get('quantity')
+    
+    # Update the cart item in the session or database
+    if request.user.is_authenticated:
+        # Update database cart
+        cart_item = CartItem.objects.get(user=request.user, artwork_id=artwork_id)
+        cart_item.quantity = quantity
+        cart_item.save()
+    else:
+        # Update session cart
+        cart = request.session.get('cart', {})
+        cart[artwork_id] = quantity
+        request.session['cart'] = cart
+    
+    # Calculate new totals
+    # This depends on your cart implementation
+    # Example using a database cart:
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(user=request.user)
+        subtotal = sum(item.artwork.price * item.quantity for item in cart_items)
+        item = CartItem.objects.get(user=request.user, artwork_id=artwork_id)
+        item_total = item.artwork.price * item.quantity
+    else:
+        # Session cart logic
+        cart = request.session.get('cart', {})
+        # You'll need to fetch artwork prices
+        # This is simplified:
+        artworks = {a.id: a.price for a in Artwork.objects.filter(id__in=cart.keys())}
+        subtotal = sum(artworks[int(id)] * qty for id, qty in cart.items())
+        item_total = artworks[int(artwork_id)] * quantity
+    
+    tax = subtotal * 0.1  # 10% tax rate
+    total = subtotal + tax
+    
+    return JsonResponse({
+        'subtotal': subtotal,
+        'tax': tax,
+        'total': total,
+        'item_total': item_total
+    })
 def signup(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -66,7 +113,7 @@ def gallery(request):
     
     return render(request, 'main.html', context)
 
-def blog_view(request):
+def blog(request):
     username = "Guest"
     email = "guest@example.com"
     if request.user.is_authenticated:
@@ -79,7 +126,6 @@ def blog_view(request):
     }
     
     return render(request, 'blog.html', context)
-
 def auction(request):
     username = "Guest"
     email = "guest@example.com"
