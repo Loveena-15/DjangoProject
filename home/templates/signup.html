@@ -139,13 +139,10 @@
     <div class="container">
         <div class="flip-container">
             <div class="card" id="card">
-                <!-- Sign Up Form -->
                 <div class="card-side front">
                     <h1>Sign Up</h1>
-                    <!-- Form Submission -->
-                    <form action="{% url 'signup' %}" method="POST">
+                    <form action="{% url 'virtual_gallery' %}" method="POST">
                         {% csrf_token %}
-                        <!-- Display messages -->
                         {% if messages %}
                             {% for message in messages %}
                                 <div class="alert alert-{{ message.tags }}">
@@ -153,33 +150,24 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
-                        
-                        <!-- Name Input -->
                         <div class="input-container">
                             <i class="fas fa-user icon"></i>
                             <input type="text" name="name" placeholder="Enter Your Name" required />
                         </div>
-                        
-                        <!-- Email Input -->
                         <div class="input-container">
                             <i class="fas fa-envelope icon"></i>
                             <input type="email" name="email" placeholder="Enter Email" required />
                         </div>
-                        
-                        <!-- Password Input -->
                         <div class="input-container">
                             <input type="password" name="password" placeholder="Create Password" required id="password"/>
                             <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
                         </div>
-
-                        <!-- Submit Button -->
                         <button type="submit">Sign Up</button>
                     </form>
 
                     <span class="switch-link" onclick="flipCard()">Already have an account? Sign In</span>
                 </div>
 
-                <!-- Sign In Form -->
                 <div class="card-side back">
                     <h1>Sign In</h1>
                     <form action="{% url 'virtual_gallery' %}" method="POST">
@@ -201,7 +189,6 @@
     </div>
 
     <script>
-        // Function to toggle password visibility (Sign Up)
         function togglePassword() {
             var password = document.getElementById('password');
             var toggleIcon = document.querySelector('.front .toggle-password');
@@ -215,8 +202,6 @@
                 toggleIcon.classList.add('fa-eye');
             }
         }
-
-        // Function to toggle password visibility (Sign In)
         function toggleLoginPassword() {
             var password = document.getElementById('login-password');
             var toggleIcon = document.querySelector('.back .toggle-password');
@@ -230,8 +215,6 @@
                 toggleIcon.classList.add('fa-eye');
             }
         }
-
-        // Function to flip the card between sign up and sign in forms
         function flipCard() {
             document.getElementById('card').classList.toggle('is-flipped');
         }

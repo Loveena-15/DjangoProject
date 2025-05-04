@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-# You can create additional user profile models if needed
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # Add any additional fields you want to store
 class Artwork(models.Model):
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)

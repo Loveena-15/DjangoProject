@@ -1,13 +1,10 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout
 from .forms import CheckoutForm
-import json
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
 def signup(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -73,7 +70,7 @@ def blog(request):
     username = "Guest"
     email = "guest@example.com"
     if request.user.is_authenticated:
-        username = request.user.first_name or request.user.username
+        username =  request.user.username
         email = request.user.email
     
     context = {
@@ -86,7 +83,7 @@ def auction(request):
     username = "Guest"
     email = "guest@example.com"
     if request.user.is_authenticated:
-        username = request.user.first_name or request.user.username
+        username =  request.user.username
         email = request.user.email
     
     products = [
@@ -251,18 +248,10 @@ def checkout(request):
     subtotal = 0
     tax = 0
     total = 0
-    
-    # Calculate cart totals (this would be your actual cart calculation)
-    # For demonstration purposes
-    
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            # Process the order (this would save to database in a real implementation)
-            # Clear the cart
             request.session['cart_items'] = []
-            
-            # Return the checkout template with success flag
             return render(request, 'checkout.html', {
                 'form': form,
                 'order_success': True,

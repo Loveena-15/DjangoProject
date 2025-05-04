@@ -59,7 +59,6 @@ a:hover {
   }
 }
 
-/* Add these rules */
 .get-started-btn {
   display: inline-block;
   padding: 30px 30px;
@@ -86,7 +85,7 @@ a:hover {
   align-items: center;
   width: 150px;
   height: 150px;
-  pointer-events: none; /* Prevent the images from affecting interactions */
+  pointer-events: none; 
 }
 
 .circle-images img {

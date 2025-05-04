@@ -1,7 +1,4 @@
 from django import forms
-from django.core.validators import RegexValidator
-
-
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
@@ -57,13 +54,7 @@ class CheckoutForm(forms.Form):
             'class': 'form-control'
         }),
         label="ZIP/Postal Code",
-        validators=[
-            RegexValidator(
-                regex=r'^\d{5}(?:[-\s]\d{4})?$',
-                message='Enter a valid ZIP code (e.g., 12345 or 12345-6789)'
-            )
-        ]
-    )
+        )
     
     country = forms.CharField(
         max_length=100,
@@ -90,12 +81,7 @@ class CheckoutForm(forms.Form):
             'class': 'form-control'
         }),
         label="Phone Number",
-        validators=[
-            RegexValidator(
-                regex=r'^\+?1?\d{9,15}$',
-                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
-            )
-        ]
+        
     )
     
     card_number = forms.CharField(
@@ -105,12 +91,7 @@ class CheckoutForm(forms.Form):
             'class': 'form-control'
         }),
         label="Card Number",
-        validators=[
-            RegexValidator(
-                regex=r'^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$',
-                message='Enter a valid 16-digit card number'
-            )
-        ]
+        
     )
     
     expiry = forms.CharField(
@@ -120,12 +101,7 @@ class CheckoutForm(forms.Form):
             'class': 'form-control'
         }),
         label="Expiration Date",
-        validators=[
-            RegexValidator(
-                regex=r'^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$',
-                message='Enter a valid expiration date in MM/YY or MM/YYYY format'
-            )
-        ]
+        
     )
     
     cvv = forms.CharField(
@@ -135,12 +111,7 @@ class CheckoutForm(forms.Form):
             'class': 'form-control'
         }),
         label="CVV",
-        validators=[
-            RegexValidator(
-                regex=r'^\d{3,4}$',
-                message='Enter a valid 3 or 4-digit CVV'
-            )
-        ]
+        
     )
     
     card_name = forms.CharField(

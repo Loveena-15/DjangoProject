@@ -471,24 +471,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get cart data from localStorage
             const cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
             console.log("Cart data:", cart);
-            
-            // Check if cart is empty
             if (cart.length === 0) {
                 document.querySelector('.order-items').innerHTML = '<p>Your cart is empty.</p>';
                 updateOrderTotals(0);
                 return;
             }
-            
-            // Clear existing items
             document.querySelector('.order-items').innerHTML = '';
-            
-            // Calculate initial totals
             let subtotal = 0;
-            
-            // Create HTML for each cart item
             cart.forEach(item => {
                 subtotal += parseFloat(item.price) * item.quantity;
                 
@@ -511,10 +502,7 @@
                 document.querySelector('.order-items').innerHTML += itemHtml;
             });
             
-            // Update order summary
             updateOrderTotals(subtotal);
-            
-            // Add event listeners for quantity buttons
             const plusButtons = document.querySelectorAll('.quantity-btn.plus');
             const minusButtons = document.querySelectorAll('.quantity-btn.minus');
             
@@ -537,46 +525,32 @@
                 let quantity = parseInt(quantityElement.textContent);
                 
                 quantity += change;
-                
-                // Get cart from localStorage
                 const cart = JSON.parse(localStorage.getItem('qalaCart')) || [];
                 const itemIndex = cart.findIndex(item => item.id == artworkId);
                 
                 if (itemIndex === -1) return;
                 
                 if (quantity <= 0) {
-                    // Remove item from cart if quantity reaches zero
                     cart.splice(itemIndex, 1);
                     orderItem.remove();
-                    
-                    // Check if cart is empty after removal
                     if (cart.length === 0) {
                         document.querySelector('.order-items').innerHTML = '<p>Your cart is empty.</p>';
                         updateOrderTotals(0);
                     }
                 } else {
-                    // Update quantity in UI and cart
                     quantityElement.textContent = quantity;
                     cart[itemIndex].quantity = quantity;
-                    
-                    // Update price for this item
                     const price = parseFloat(cart[itemIndex].price);
                     const newItemTotal = price * quantity;
                     orderItem.querySelector('.order-item-price').textContent = '$' + newItemTotal.toFixed(2);
                 }
-                
-                // Save updated cart to localStorage
                 localStorage.setItem('qalaCart', JSON.stringify(cart));
-                
-                // Recalculate totals
                 let subtotal = 0;
                 cart.forEach(item => {
                     subtotal += parseFloat(item.price) * item.quantity;
                 });
                 
                 updateOrderTotals(subtotal);
-                
-                // Update cart count in header if visible
                 const cartCountEl = document.getElementById('cartCount');
                 if (cartCountEl) {
                     let totalItems = 0;
@@ -586,7 +560,7 @@
             }
             
             function updateOrderTotals(subtotal) {
-                const tax = subtotal * 0.1; // 10% tax
+                const tax = subtotal * 0.1;
                 const total = subtotal + tax;
                 
                 document.querySelector('.order-totals div:nth-child(1) span:last-child').textContent = '$' + subtotal.toFixed(2);
@@ -594,25 +568,18 @@
                 document.querySelector('.order-total span:last-child').textContent = '$' + total.toFixed(2);
             }
         });
-        // Make the "Complete Purchase" button show the popup and redirect after a delay
+        
     document.querySelector(".checkout-btn").addEventListener("click", function(e) {
-        e.preventDefault(); // Stop form submission
-        
-        // Show the success popup
+        e.preventDefault(); 
         document.getElementById("successPopup").classList.add("active");
-        
-        // Set up countdown
         let seconds = 5;
         const countdownElement = document.getElementById("countdown");
-        
-        // Update countdown every second
         const countdownInterval = setInterval(function() {
             seconds--;
             countdownElement.textContent = seconds;
             
             if (seconds <= 0) {
                 clearInterval(countdownInterval);
-                // Redirect to home page
                 window.location.href = "{% url 'home' %}";
             }
         }, 1000);
